@@ -1,0 +1,103 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-title>Reserva de Hotel</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+
+  <!-- ================= TELA 1: ENTRADA DE DADOS ================= -->
+  <div *ngIf="telaAtual === 1">
+    <h3>Novo Orçamento</h3>
+    
+    <ion-item>
+      <ion-label position="stacked">Valor da Diária (R$)</ion-label>
+      <ion-input type="number" [(ngModel)]="valorDiaria" placeholder="0.00"></ion-input>
+    </ion-item>
+
+    <ion-item class="ion-margin-top">
+      <ion-label>Dias de Hospedagem: <strong>{{ quantidadeDias }}</strong></ion-label>
+      <ion-range min="1" max="30" pin="true" ticks="true" snaps="true" [(ngModel)]="quantidadeDias">
+        <ion-label slot="start">1</ion-label>
+        <ion-label slot="end">30</ion-label>
+      </ion-range>
+    </ion-item>
+
+    <ion-button expand="full" class="ion-margin-top" (click)="continuarOrcamento()">
+      Continuar e Calcular
+    </ion-button>
+  </div>
+
+
+  <!-- ================= TELA 2: DETALHES DO ORÇAMENTO ================= -->
+  <div *ngIf="telaAtual === 2">
+    <h3>Detalhes do Orçamento</h3>
+
+    <ion-card>
+      <ion-card-content>
+        <p>Valor da Diária: <strong>R$ {{ valorDiaria }}</strong></p>
+        <p>Quantidade de Dias: <strong>{{ quantidadeDias }} dias</strong></p>
+        <hr>
+        <h4>Total a Pagar: <ion-text color="success"><strong>R$ {{ valorTotal }}</strong></ion-text></h4>
+      </ion-card-content>
+    </ion-card>
+
+    <ion-row>
+      <ion-col>
+        <ion-button expand="full" color="medium" (click)="mudarTela(1)">VOLTAR</ion-button>
+      </ion-col>
+      <ion-col>
+        <ion-button expand="full" color="success" (click)="confirmarReserva()">CONFIRMAR</ion-button>
+      </ion-col>
+    </ion-row>
+  </div>
+
+
+  <!-- ================= TELA 3: CONFIRMAÇÃO DA RESERVA ================= -->
+  <div *ngIf="telaAtual === 3" class="ion-text-center">
+    <ion-card color="light">
+      <ion-card-content>
+        <p style="font-size: 1.2em; line-height: 1.5;">
+          SUA RESERVA ESTÁ AGENDADA. AGUARDANDO O PAGAMENTO DE 
+          <ion-text color="danger"><strong>R$ {{ valorTotal }}</strong></ion-text> 
+          PARA CONFIRMAR SUA ESTADIA CONOSCO!
+        </p>
+      </ion-card-content>
+    </ion-card>
+
+    <ion-button expand="full" class="ion-margin-top" (click)="mudarTela(4)">
+      VER LISTA DE ORÇAMENTOS
+    </ion-button>
+    
+    <ion-button expand="full" color="secondary" (click)="novaReserva()">
+      NOVA RESERVA
+    </ion-button>
+  </div>
+
+
+  <!-- ================= TELA 4: LISTA DE ORÇAMENTOS SALVOS ================= -->
+  <div *ngIf="telaAtual === 4">
+    <h3>Orçamentos Salvos</h3>
+
+    <ion-list *ngIf="orcamentos.length > 0">
+      <ion-item *ngFor="let o of orcamentos; let i = index">
+        <ion-label>
+          <h2>Total: <strong>R$ {{ o.valorTotal }}</strong></h2>
+          <p>Diária: R$ {{ o.valorDiaria }} | {{ o.quantidadeDias }} dias</p>
+        </ion-label>
+        <ion-button slot="end" color="danger" (click)="excluirOrcamento(i)">
+          EXCLUIR
+        </ion-button>
+      </ion-item>
+    </ion-list>
+
+    <p *ngIf="orcamentos.length === 0" class="ion-text-center ion-padding">
+      Nenhum orçamento salvo no momento.
+    </p>
+
+    <ion-button expand="full" color="medium" class="ion-margin-top" (click)="mudarTela(3)">
+      VOLTAR
+    </ion-button>
+  </div>
+
+</ion-content>
